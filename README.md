@@ -12,10 +12,11 @@ community structure, which are easily disturbed by network
 anomaly or attack. Thus, to address the aforementioned challenges simultaneously, we propose a novel robust framework
 for attributed network embedding by preserving Community
 Information (AnECI). Rather than using pairwise connection based micro-structure, we try to guide the node embedding by
-the community structure, which is expected to own stronger
+the underlying community structure learned from data itself as
+an unsupervised learning, which is expected to own stronger
 anti-interference ability. Specially, we put forward with a new
-modularity function for high-order proximity and soft network
-partition to guide the network embedding of an attributed
+modularity function for high-order proximity and overlapped
+community to guide the network embedding of an attributed
 graph encoder. We conducted extensive experiments on node
 classification, anomaly detection and community detection tasks
 on real benchmark data sets, and the results show that AnECI
