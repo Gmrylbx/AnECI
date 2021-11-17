@@ -93,15 +93,4 @@ def anomaly_detection():
 
 if __name__ == '__main__':
     auc, ap = anomaly_detection()
-    # AUC, AP = [], []
-    # times = 10
-    # for i in range(times):
-    #     print("times : %d" % i)
-    #     print(args.dataset + '  type : ' + args.type)
-    #     auc, ap = anomaly_detection()
-    #     # print(recall)
-    #     AUC.append(auc)
-    #     AP.append(ap)
-    # mean_roc = torch.Tensor(AUC).mean()
-    # mean_ap = torch.Tensor(AP).mean()
-    # print("mean:  acc: %.4f  ap : %.4f " % (mean_roc, mean_ap))
+
