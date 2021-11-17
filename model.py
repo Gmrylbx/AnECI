@@ -61,9 +61,10 @@ class AnECI(nn.Module):
     def __init__(self, input_dim, output_dim, hidden, dropout, num_features_nonzero):
         super(AnECI, self).__init__()
         assert hidden[-1] == output_dim
+        assert len(dropout) == len(hidden)
 
         self.num_layer = len(hidden)
-        self.seqdim = [input_dim] + hidden
+        self.hidden = [input_dim] + hidden
         self.sft = nn.Softmax(dim=1)
         # print('input dim:', input_dim)
         # print('output dim:', output_dim)
@@ -71,7 +72,7 @@ class AnECI(nn.Module):
         self.layers = nn.Sequential()
         for i in range(self.num_layer):
             self.layers.add_module('Conv' + str(i),
-                                   GraphConvolution(self.seqdim[i], hidden[i], num_features_nonzero,
+                                   GraphConvolution(self.hidden[i], self.hidden[i + 1], num_features_nonzero,
                                                     activation=F.leaky_relu, dropout=dropout[i],
                                                     is_sparse_inputs=bool(i == 0)))
 

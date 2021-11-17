@@ -1,11 +1,9 @@
-from utils import *
 import time
-import args_communitydetection as args
-import torch.nn as nn
 import torch.optim as optim
-import scipy.sparse as sp
 import dataset
 from model import AnECI
+from utils import *
+import args_communitydetection as args
 
 
 def community_detection():
@@ -15,7 +13,9 @@ def community_detection():
 
     # load data
     adj, features, labels, idx_train, idx_test, idx_val = dataset.load_datasp(args.dataset)
+    features = sp.eye(adj.shape[0], adj.shape[0])
 
+    # preprocess data
     info = get_info(adj, args.field)
     info = info.to(device)
 
@@ -30,8 +30,6 @@ def community_detection():
     weight_mask = adj_label.to_dense() == 1
     weight_tensor = torch.ones_like(weight_mask).to(device)
     weight_tensor[weight_mask] = 10
-    stru_label = torch.zeros_like(info)
-    stru_label[info > 0] = 10
 
     i = torch.from_numpy(features[0]).long().to(device)
     v = torch.from_numpy(features[1]).to(device)
@@ -60,10 +58,12 @@ def community_detection():
         loss = args.par1 * Q + args.par2 * R
         loss.backward()
         opt.step()
+
         time_end = time.time()
         time_epoch = time_end - time_start
         if args.print_yes and epoch % args.print_intv == 0:
             print("epoch %d :" % epoch, "time: %f" % time_epoch, "Q is %.10f" % (-1 * Q))
+
     net.eval()
     embedding = net.embedding((features, support))
     embedding = embedding.detach().to("cpu")
@@ -76,11 +76,4 @@ def community_detection():
 
 if __name__ == '__main__':
     modularity = community_detection()
-    # times = 10
-    # Q = []
-    # for j in range(times):
-    #     print("times : %d" % (j))
-    #     q = community_detection()
-    #     Q.append(q)
-    # Q = np.array(Q)
-    # print("mean : %.6f, std : %.6f" % (Q.mean(), Q.std()))
+

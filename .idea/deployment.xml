@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="lab_pt" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="lab_pt" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="lab_mist">
         <serverdata>
@@ -12,7 +12,7 @@
       <paths name="lab_pt">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/user_lab/lyf/Mine" local="$PROJECT_DIR$" />
+            <mapping deploy="/home/user_lab/lyf/AnECI" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
@@ -31,5 +31,6 @@
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

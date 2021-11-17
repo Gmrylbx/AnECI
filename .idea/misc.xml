@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/main.py" />
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7 (pytorch) (2)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.7.9 (sftp://user_lab@113.54.158.52:1022/opt/anaconda3/envs/python_pt/bin/python)" project-jdk-type="Python SDK" />
 </project>

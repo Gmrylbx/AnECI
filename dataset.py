@@ -16,6 +16,7 @@ def sample_mask(idx, l):
     mask[idx] = 1
     return np.array(mask, dtype=np.bool)
 
+
 def parse_index_file(filename):
     """
     Parse index file.
@@ -24,6 +25,7 @@ def parse_index_file(filename):
     for line in open(filename):
         index.append(int(line.strip()))
     return index
+
 
 def get_prognn_splits(json_file):
     """Get target nodes incides, which is the nodes with degree > 10 in the test set."""
@@ -35,6 +37,8 @@ def get_prognn_splits(json_file):
 
 def load_datasp(dataset_str):
     """
+    This code adapted from the Tensorflow implementation of GCN by Thomas Kipf (https://github.com/tkipf/gcn).
+
     Loads input data from gcn/data directory
 
     ind.dataset_str.x => the feature vectors of the training instances as scipy.sparse.csr.csr_matrix object;
@@ -55,7 +59,6 @@ def load_datasp(dataset_str):
     """
 
     root = './Data_gcn/'
-
     if dataset_str == 'polblogs':
         data = Dataset(root=root, name=dataset_str, setting='gcn', seed=10)
         adj, features, labels = data.adj, data.features, data.labels

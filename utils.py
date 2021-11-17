@@ -19,8 +19,6 @@ def get_prognn_splits(json_file):
 
 
 def check_classification(x_train, x_test, y_train, y_test):
-    # x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=test_ratio)
-    # clf = LogisticRegressionCV(max_iter=10000)
     clf = OneVsRestClassifier(LogisticRegression(max_iter=10000, penalty='l2'))
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)

@@ -1,13 +1,10 @@
-from utils import *
 import time
-import args_nodeclassification as args
 import torch.optim as optim
-import numpy as np
-import scipy.sparse as sp
-import dataset
-from model import AnECI
 from deeprobust.graph.data import PrePtbDataset
-import json
+import dataset
+from utils import *
+from model import AnECI
+import args_nodeclassification as args
 
 
 def train(data, par, model, opt, device):
@@ -87,7 +84,6 @@ def node_classfication():
     setup_seed(5)
     print("Using {} dataset".format(args.dataset))
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    # device = 'cpu'
 
     # load clean data set
     adj, features, labels, idx_train, idx_test, idx_val = dataset.load_datasp(args.dataset)
@@ -141,7 +137,6 @@ def node_classfication():
     adj_drop = adj
     if args.denoise:
         print("***********************************************denoising phase start***********************************************")
-        # parameters
         net_denoise = AnECI(feat_dim, args.hidden[-1], args.hidden, args.dropout, num_features_nonzero)
         opt = optim.Adam(net_denoise.parameters(), lr=args.learning_rate, weight_decay=args.weightdecay)
         best_score, best_embedding, best_epoch = train(data, par, net_denoise, opt, device)
@@ -153,15 +148,15 @@ def node_classfication():
         adj_rec = torch.mm(embedding, embedding.t())
         adj = torch.Tensor(adj.todense())
         adj_rec = adj - adj_rec * adj
-
-        ratio = adj_rec.sum() / (adj).sum()  ###drop ratio
-        a, b, c = args.a, 0.5, 0.75
-        ratio = 1 / (1 + np.exp((b - ratio) * a)) * c
-
         adj_rec_1d = adj_rec.view(-1)
         adj_rec_1d = adj_rec_1d[adj_rec_1d > 0]
         induces = torch.flip(torch.sort(adj_rec_1d).indices, dims=[0])
         adj_rec_1d = adj_rec_1d[induces]
+        ######## calculating anomaly score of edges ########
+
+        ratio = adj_rec.sum() / (adj).sum()  ###drop ratio
+        a, b, c = args.a, 0.5, 0.75
+        ratio = 1 / (1 + np.exp((b - ratio) * a)) * c
         print("drop ratio : %.4f" % (ratio))
 
         thre = adj_rec_1d[int(ratio * len(adj_rec_1d))]
@@ -177,30 +172,20 @@ def node_classfication():
     data['adj'] = adj_drop
     par['epochs'], par['par1'], par['par2'], par['field'] = args.num_epoch, args.par1, args.par2, args.field
     par['print_yes'], par['print_intv'], par['fastmode'] = 1, args.print_intv, 0
-    # print("times : %d" % i)
+
     net = AnECI(feat_dim, args.hidden[-1], args.hidden, args.dropout, num_features_nonzero)
     opt = optim.Adam(net.parameters(), lr=args.learning_rate, weight_decay=args.weightdecay)
     acc_val, embedding, best_epoch = train(data, par, net, opt, device)
 
     x_train = embedding[idx_train, :]
-    x_val = embedding[idx_val, :]
     x_test = embedding[idx_test, :]
 
     acc_test, micro_test, macro_test = check_classification(x_train, x_test, y_train, y_test)
     print("***********************************************training phase over***********************************************")
 
-    print("\ntrain over!   best_epoch : %d, acc_test: %.4f\n" % (best_epoch, acc_test))
+    print("\ntrain over!   best_epoch : %d,  acc_test: %.4f\n" % (best_epoch, acc_test))
     return acc_test, micro_test, macro_test
 
 
 if __name__ == '__main__':
     acc, micro, macro = node_classfication()
-
-    # times = 10
-    # ACC = []
-    # for j in range(times):
-    #     print("times : %d, dataset : %s, attack : %s, ptb_rate : %.4f" % (j, args.dataset, args.attack, args.ptb_rate))
-    #     acc, micro, macro = node_classfication()
-    #     ACC.append(acc)
-    # ACC = np.array(ACC)
-    # print("ptb_rate : %.4f, mean : %.6f, std : %.6f" % (args.ptb_rate, ACC.mean(), ACC.std()))
