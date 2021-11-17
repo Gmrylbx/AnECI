@@ -68,7 +68,6 @@ def train(data, par, model, opt, device):
 
         x_train, x_val, x_test = embedding[idx_train, :], embedding[idx_val, :], embedding[idx_test, :]
         acc_val, micro_val, macro_val = check_classification(x_train, x_val, y_train, y_val)
-        acc_test, micro_test, macro_test = check_classification(x_train, x_test, y_train, y_test)
         if acc_val > best_score:
             best_epoch = epoch
             best_embedding = embedding
@@ -78,10 +77,9 @@ def train(data, par, model, opt, device):
         time_epoch = time_end - time_start
         time_total += time_epoch
         if print_yes and epoch % print_intv == 0:
-            print("epoch %d :" % epoch, "time: %.2f" % time_epoch, "Q : %.10f" % (-1 * Q),
-                   "acc_val : %.4f" % acc_val)
+            print("epoch %d :" % epoch, "time: %.2f" % time_epoch, "Q : %.10f" % (-1 * Q), "acc_val : %.4f" % acc_val)
 
-    print("train over!!!  best epoch : %d" % best_epoch)
+    print("best epoch : %d, " % best_epoch, "best val score : %.4f" % best_score)
     return best_score, best_embedding, best_epoch
 
 
@@ -142,7 +140,7 @@ def node_classfication():
 
     adj_drop = adj
     if args.denoise:
-        print("***********************************************denoising phase start***********************************************\n")
+        print("***********************************************denoising phase start***********************************************")
         # parameters
         net_denoise = AnECI(feat_dim, args.hidden[-1], args.hidden, args.dropout, num_features_nonzero)
         opt = optim.Adam(net_denoise.parameters(), lr=args.learning_rate, weight_decay=args.weightdecay)
@@ -175,7 +173,7 @@ def node_classfication():
         print("***********************************************denoising phase over***********************************************\n")
 
 
-    print("***********************************************training phase start***********************************************\n")
+    print("***********************************************training phase start***********************************************")
     data['adj'] = adj_drop
     par['epochs'], par['par1'], par['par2'], par['field'] = args.num_epoch, args.par1, args.par2, args.field
     par['print_yes'], par['print_intv'], par['fastmode'] = 1, args.print_intv, 0
@@ -189,9 +187,9 @@ def node_classfication():
     x_test = embedding[idx_test, :]
 
     acc_test, micro_test, macro_test = check_classification(x_train, x_test, y_train, y_test)
-
     print("***********************************************training phase over***********************************************")
-    print("embedding:  best_epoch : %d, acc_test: %.4f\n" % (best_epoch, acc_test))
+
+    print("\ntrain over!   best_epoch : %d, acc_test: %.4f\n" % (best_epoch, acc_test))
     return acc_test, micro_test, macro_test
 
 

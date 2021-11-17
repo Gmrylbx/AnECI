@@ -11,7 +11,7 @@
 # --par1 Parameter for modularity loss, i.e. beta_1.
 # --par2 Parameter for reconstruction loss, i.e. beta_2.
 # --field Parameter of W_l, i.e. refers to the weights of calculating the high-order proximity matrix.
-# --a Parameter of smoothing function in AnECI+, i.e. Alpha
+# --a Parameter of smoothing function in AnECI+, i.e. Alpha, and we fix Beta, Gama as 0.5, 0.75, respectively.
 # --seed random seed
 
 
